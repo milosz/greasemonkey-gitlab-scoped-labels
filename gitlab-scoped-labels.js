@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name     GitLab scoped labels (view only)
-// @version  6
+// @version  7
 // @grant    none
 // @include  https://git.octocat.lab/* 
 // ==/UserScript==
@@ -55,14 +55,6 @@ if(window.location.pathname.match(/.*\/boards/)) { // boards
               label.setAttribute("style", label.getAttribute("style") + label.firstChild.innerHTML.replace(/<.* style="background-color: (#\w*)".*/, "--label-background-color: $1; --label-inset-border: inset 0 0 0 1px $1;"))
               label.firstChild.innerHTML = label.firstChild.innerHTML.replace(/<(.*)>(\w*)::(\w*)<\/span>/, "<$1>$2</span> <span class='gl-label-text-scoped'>$3</span>")
             }
-          }
-        }
-      } else {
-        for(const label of mutation.addedNodes) {
-          if(label.innerText.includes("::")) { 
-            label.classList.add("gl-label-scoped")
-            label.setAttribute("style", label.getAttribute("style") + label.firstChild.innerHTML.replace(/<.*style="background-color: (#\w*)">.*/, "--label-background-color: $1; --label-inset-border: inset 0 0 0 1px $1;"))
-            label.firstChild.innerHTML = label.firstChild.innerHTML.replace(/(.*)(\w*)::(\w*)(.*)/, "$1 $2</span> <span class='gl-label-text-scoped'>$3</span>$4")
           }
         }
       }
