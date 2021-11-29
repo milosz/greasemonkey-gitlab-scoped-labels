@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name     GitLab scoped labels (view only)
-// @version  7
+// @version  8
 // @grant    none
 // @include  https://git.octocat.lab/* 
 // ==/UserScript==
