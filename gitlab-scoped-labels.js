@@ -14,7 +14,7 @@ if(window.location.pathname.match(/.*\/boards/)) { // boards
         for(const label of labels) {
           if(label.innerText.includes("::")) {
             label.classList.add("gl-label-scoped")
-            label.innerHTML = label.innerText.replace(/(\w*)::(\w*)/, "<a href='#' class='gl-link gl-label-link'><span class='gl-label-text'>$1</span> <span class='gl-label-text-scoped'>$2</span></a>");
+            label.innerHTML = label.innerText.replace(/([^:]*)::([^:]*)/, "<a href='#' class='gl-link gl-label-link'><span class='gl-label-text'>$1</span> <span class='gl-label-text-scoped'>$2</span></a>");
           } else if(label.parentNode.classList.contains("board-title-text")) {
             console.log(label)
             label.classList.add("gl-label-scoped")
@@ -30,8 +30,8 @@ if(window.location.pathname.match(/.*\/boards/)) { // boards
   for(const label of labels) {
     if(label.firstChild.firstChild.innerText.includes("::")) {
       label.classList.add("gl-label-scoped")
-      label.setAttribute("style", label.getAttribute("style") + label.firstChild.innerHTML.replace(/<.*style="background-color: (#\w*)">.*/, "--label-background-color: $1; --label-inset-border: inset 0 0 0 1px $1;"))
-      label.firstChild.innerHTML = label.firstChild.innerHTML.replace(/<(.*)>(\w*)::(\w*)<\/span>/, "<$1>$2</span> <span class='gl-label-text-scoped'>$3</span>")
+      label.setAttribute("style", label.getAttribute("style") + label.firstChild.innerHTML.replace(/<.*style="background-color: (#[^:]*)">.*/, "--label-background-color: $1; --label-inset-border: inset 0 0 0 1px $1;"))
+      label.firstChild.innerHTML = label.firstChild.innerHTML.replace(/<(.*)>([^:]*)::([^:]*)<\/span>/, "<$1>$2</span> <span class='gl-label-text-scoped'>$3</span>")
     }
   }
 } else if(window.location.pathname.match(/.*\/issues\/.*/)) { // issue details
@@ -39,8 +39,8 @@ if(window.location.pathname.match(/.*\/boards/)) { // boards
   for(const label of menuLabels) {
     if(label.innerText.includes("::")) {      
       label.classList.add("gl-label-scoped")
-      label.setAttribute("style", label.getAttribute("style") + label.firstChild.innerHTML.replace(/<.*style="background-color: (#\w*)">.*/, "--label-background-color: $1; --label-inset-border: inset 0 0 0 1px $1;"))
-      label.firstChild.innerHTML = label.firstChild.innerHTML.replace(/(.*)(\w*)::(\w*)(.*)/, "$1 $2</span> <span class='gl-label-text-scoped'>$3</span>$4")
+      label.setAttribute("style", label.getAttribute("style") + label.firstChild.innerHTML.replace(/<.*style="background-color: (#[^:]*)">.*/, "--label-background-color: $1; --label-inset-border: inset 0 0 0 1px $1;"))
+      label.firstChild.innerHTML = label.firstChild.innerHTML.replace(/(.*)([^:]*)::([^:]*)(.*)/, "$1 $2</span> <span class='gl-label-text-scoped'>$3</span>$4")
     }
   }
   const callback = function(mutations, observer) {
@@ -51,9 +51,9 @@ if(window.location.pathname.match(/.*\/boards/)) { // boards
           for(const label of labels) {
             if(label.innerText.includes("::")) { 
               label.classList.add("gl-label-scoped")
-              label.firstChild.innerHTML.replace(/<.* style="background-color: (#\w*)".*/, "--label-background-color: $1; --label-inset-border: inset 0 0 0 1px $1;")
-              label.setAttribute("style", label.getAttribute("style") + label.firstChild.innerHTML.replace(/<.* style="background-color: (#\w*)".*/, "--label-background-color: $1; --label-inset-border: inset 0 0 0 1px $1;"))
-              label.firstChild.innerHTML = label.firstChild.innerHTML.replace(/<(.*)>(\w*)::(\w*)<\/span>/, "<$1>$2</span> <span class='gl-label-text-scoped'>$3</span>")
+              label.firstChild.innerHTML.replace(/<.* style="background-color: (#[^:]*)".*/, "--label-background-color: $1; --label-inset-border: inset 0 0 0 1px $1;")
+              label.setAttribute("style", label.getAttribute("style") + label.firstChild.innerHTML.replace(/<.* style="background-color: (#[^:]*)".*/, "--label-background-color: $1; --label-inset-border: inset 0 0 0 1px $1;"))
+              label.firstChild.innerHTML = label.firstChild.innerHTML.replace(/<(.*)>([^:]*)::([^:]*)<\/span>/, "<$1>$2</span> <span class='gl-label-text-scoped'>$3</span>")
             }
           }
         }
