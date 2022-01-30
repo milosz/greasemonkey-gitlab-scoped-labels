@@ -17,7 +17,6 @@ if(window.location.pathname.match(/.*\/boards/)) { // boards
             label.classList.add("gl-label-scoped")
             label.innerHTML = label.innerText.replace(/([^:]*)::([^:]*)/, "<a href='#' class='gl-link gl-label-link'><span class='gl-label-text'>$1</span> <span class='gl-label-text-scoped'>$2</span></a>");
           } else if(label.parentNode.classList.contains("board-title-text")) {
-            console.log(label)
             label.classList.add("gl-label-scoped")
           }
         }
