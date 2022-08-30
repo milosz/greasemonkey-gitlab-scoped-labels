@@ -120,4 +120,24 @@ if(window.location.pathname.match(/.*\/boards/)) { // boards
   }
   const observer = new MutationObserver(callback)
   observer.observe(document, { childList: true, subtree: true })
+} else if(window.location.pathname.match(/.*\/milestones\/.*/)) { // milestones
+  const callback = function(mutations, observer) {
+    for(const mutation of mutations) {
+      if(mutation.target.classList.contains("tab-pane")) {
+        for(const addedElement of mutation.addedNodes) {
+          const labels = addedElement.querySelectorAll("span.gl-label");
+          for(const label of labels) {
+            if(label.innerText.includes("::")) {
+              label.classList.add("gl-label-scoped")
+              label.firstChild.innerHTML.replace(/<.* style="background-color: (#\w*)".*/, "--label-background-color: $1; --label-inset-border: inset 0 0 0 1px $1;")
+              label.setAttribute("style", label.getAttribute("style") + label.firstChild.innerHTML.replace(/<.* style="background-color: (#\w*)".*/, "--label-background-color: $1; --label-inset-border: inset 0 0 0 1px $1;"))
+              label.firstChild.innerHTML = label.firstChild.innerHTML.replace(/<(.*)>([^:]*)::([^:]*)<\/span>/, "<$1>$2</span> <span class='gl-label-text-scoped'>$3</span>")
+            }
+          }
+        }
+      }
+    }
+  }
+  const observer = new MutationObserver(callback)
+  observer.observe(document, { childList: true, subtree: true })
 }
