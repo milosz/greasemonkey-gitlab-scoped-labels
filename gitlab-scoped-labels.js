@@ -3,7 +3,7 @@
 // @version  11
 // @grant    none
 // @include  https://git.octocat.lab/*
-// @license  GPL-3.0 License; https://www.gnu.org/licenses/gpl-3.0.txt   
+// @license  GPL-3.0 License; https://www.gnu.org/licenses/gpl-3.0.txt
 // ==/UserScript==
 
 
@@ -26,30 +26,40 @@ if(window.location.pathname.match(/.*\/boards/)) { // boards
   const observer = new MutationObserver(callback)
   observer.observe(document, { childList: true, subtree: true })
 } else if(window.location.pathname.match(/.*\/issues$/)) { // issues list
-  const labels = document.querySelectorAll("span.gl-label");
-  for(const label of labels) {
-    if(label.firstChild.firstChild.innerText.includes("::")) {
-      label.classList.add("gl-label-scoped")
-      label.setAttribute("style", label.getAttribute("style") + label.firstChild.innerHTML.replace(/<.*style="background-color: (#\w*)">.*/, "--label-background-color: $1; --label-inset-border: inset 0 0 0 1px $1;"))
-      label.firstChild.innerHTML = label.firstChild.innerHTML.replace(/<(.*)>([^:]*)::([^:]*)<\/span>/, "<$1>$2</span> <span class='gl-label-text-scoped'>$3</span>")
-    }
-  }
-} else if(window.location.pathname.match(/.*\/issues\/.*/)) { // issue details
-  const menuLabels = document.querySelectorAll("span.gl-label");
-  for(const label of menuLabels) {
-    if(label.innerText.includes("::")) {      
-      label.classList.add("gl-label-scoped")
-      label.setAttribute("style", label.getAttribute("style") + label.firstChild.innerHTML.replace(/<.*style="background-color: (#\w*)">.*/, "--label-background-color: $1; --label-inset-border: inset 0 0 0 1px $1;"))
-      label.firstChild.innerHTML = label.firstChild.innerHTML.replace(/(.*)([^:]*)::([^:]*)(.*)/, "$1 $2</span> <span class='gl-label-text-scoped'>$3</span>$4")
-    }
-  }
   const callback = function(mutations, observer) {
     for(const mutation of mutations) {
-      if(mutation.target.classList.contains("notes")) {
-        for(const timeline of mutation.addedNodes) {      
+      for(const addedElement of mutation.addedNodes) {
+        if(addedElement.classList.contains("issue")) {
+          const labels = addedElement.querySelectorAll("span.gl-label");
+          for(const label of labels) {
+            if(label.firstChild.firstChild.innerText.includes("::")) {
+              label.classList.add("gl-label-scoped")
+              label.setAttribute("style", label.getAttribute("style") + label.firstChild.innerHTML.replace(/<.*style="background-color: (#\w*)">.*/, "--label-background-color: $1; --label-inset-border: inset 0 0 0 1px $1;"))
+              label.firstChild.innerHTML = label.firstChild.innerHTML.replace(/<(.*)>([^:]*)::([^:]*)<\/span>/, "<$1>$2</span> <span class='gl-label-text-scoped'>$3</span>")
+            }
+          }
+        }
+      }
+    }
+  }
+  const observer = new MutationObserver(callback)
+  observer.observe(document, { childList: true, subtree: true })
+} else if(window.location.pathname.match(/.*\/issues\/.*/)) { // issue details
+  const callback = function(mutations, observer) {
+    for(const mutation of mutations) {
+      if(mutation.target.classList.contains("issuable-show-labels")) {
+        for(const label of mutation.addedNodes) {
+          if(label.innerText.includes("::")) {
+            label.classList.add("gl-label-scoped")
+            label.setAttribute("style", label.getAttribute("style") + label.firstChild.innerHTML.replace(/<.*style="background-color: (#\w*)">.*/, "--label-background-color: $1; --label-inset-border: inset 0 0 0 1px $1;"))
+            label.firstChild.innerHTML = label.firstChild.innerHTML.replace(/(.*)([^:]*)::([^:]*)(.*)/, "$1 $2</span> <span class='gl-label-text-scoped'>$3</span>$4")
+          }
+        }
+      } else if(mutation.target.classList.contains("notes")) {
+        for(const timeline of mutation.addedNodes) {
           const labels = timeline.querySelectorAll("span.gl-label")
           for(const label of labels) {
-            if(label.innerText.includes("::")) { 
+            if(label.innerText.includes("::")) {
               label.classList.add("gl-label-scoped")
               label.firstChild.innerHTML.replace(/<.* style="background-color: (#\w*)".*/, "--label-background-color: $1; --label-inset-border: inset 0 0 0 1px $1;")
               label.setAttribute("style", label.getAttribute("style") + label.firstChild.innerHTML.replace(/<.* style="background-color: (#\w*)".*/, "--label-background-color: $1; --label-inset-border: inset 0 0 0 1px $1;"))
@@ -59,13 +69,13 @@ if(window.location.pathname.match(/.*\/boards/)) { // boards
         }
       }
     }
-  }    
+  }
   const observer = new MutationObserver(callback)
   observer.observe(document, { childList: true, subtree: true })
 } else if(window.location.pathname.match(/.*\/labels/)) { // labels
   const labels = document.querySelectorAll("span.gl-label");
   for(const label of labels) {
-    if(label.innerText.includes("::")) {      
+    if(label.innerText.includes("::")) {
       label.classList.add("gl-label-scoped")
       const color = label.innerHTML.replace(/<.*style="background-color: (#\w*)".*/, "$1")
       label.setAttribute("style", label.getAttribute("style") + "--label-background-color: " + color + "; --label-inset-border: inset 0 0 0 2px " + color + "; color " + color + ";")
@@ -75,7 +85,7 @@ if(window.location.pathname.match(/.*\/boards/)) { // boards
 } else if(window.location.pathname.match(/.*\/merge_requests$/)) { // merge request list
   const labels = document.querySelectorAll("span.gl-label");
   for(const label of labels) {
-    if(label.innerText.includes("::")) {      
+    if(label.innerText.includes("::")) {
       label.classList.add("gl-label-scoped")
       const color = label.innerHTML.replace(/<.*style="background-color: (#\w*)".*/, "$1")
       label.setAttribute("style", label.getAttribute("style") + "--label-background-color: " + color + "; --label-inset-border: inset 0 0 0 2px " + color + "; color " + color + ";")
@@ -83,22 +93,21 @@ if(window.location.pathname.match(/.*\/boards/)) { // boards
     }
   }
 } else if(window.location.pathname.match(/.*\/merge_requests\/.*/)) { // merge request
-  const labels = document.querySelectorAll("span.gl-label");
-  for(const label of labels) {
-    if(label.innerText.includes("::")) {      
-      label.classList.add("gl-label-scoped")
-      const color = label.innerHTML.replace(/<.*style="background-color: (#\w*)".*/, "$1")
-      label.setAttribute("style", label.getAttribute("style") + "--label-background-color: " + color + "; --label-inset-border: inset 0 0 0 2px " + color + "; color " + color + ";")
-      label.innerHTML = label.innerText.replace(/([^:]*)::([^:]*)/, "<span style='background-color: " + color + "' class='gl-label-text gl-label-text-light'>$1</span> <span class='gl-label-text-scoped'>$2</span>");
-    }
-  }
   const callback = function(mutations, observer) {
     for(const mutation of mutations) {
-      if(mutation.target.classList.contains("notes")) {
-        for(const timeline of mutation.addedNodes) {      
+      if(mutation.target.classList.contains("issuable-show-labels")) {
+        for(const label of mutation.addedNodes) {
+          if(label.innerText.includes("::")) {
+            label.classList.add("gl-label-scoped")
+            label.setAttribute("style", label.getAttribute("style") + label.firstChild.innerHTML.replace(/<.*style="background-color: (#\w*)">.*/, "--label-background-color: $1; --label-inset-border: inset 0 0 0 1px $1;"))
+            label.firstChild.innerHTML = label.firstChild.innerHTML.replace(/(.*)([^:]*)::([^:]*)(.*)/, "$1 $2</span> <span class='gl-label-text-scoped'>$3</span>$4")
+          }
+        }
+      } else if(mutation.target.classList.contains("notes")) {
+        for(const timeline of mutation.addedNodes) {
           const labels = timeline.querySelectorAll("span.gl-label")
           for(const label of labels) {
-            if(label.innerText.includes("::")) { 
+            if(label.innerText.includes("::")) {
               label.classList.add("gl-label-scoped")
               label.firstChild.innerHTML.replace(/<.* style="background-color: (#\w*)".*/, "--label-background-color: $1; --label-inset-border: inset 0 0 0 1px $1;")
               label.setAttribute("style", label.getAttribute("style") + label.firstChild.innerHTML.replace(/<.* style="background-color: (#\w*)".*/, "--label-background-color: $1; --label-inset-border: inset 0 0 0 1px $1;"))
@@ -108,7 +117,27 @@ if(window.location.pathname.match(/.*\/boards/)) { // boards
         }
       }
     }
-  }    
+  }
+  const observer = new MutationObserver(callback)
+  observer.observe(document, { childList: true, subtree: true })
+} else if(window.location.pathname.match(/.*\/milestones\/.*/)) { // milestones
+  const callback = function(mutations, observer) {
+    for(const mutation of mutations) {
+      if(mutation.target.classList.contains("tab-pane")) {
+        for(const addedElement of mutation.addedNodes) {
+          const labels = addedElement.querySelectorAll("span.gl-label");
+          for(const label of labels) {
+            if(label.innerText.includes("::")) {
+              label.classList.add("gl-label-scoped")
+              label.firstChild.innerHTML.replace(/<.* style="background-color: (#\w*)".*/, "--label-background-color: $1; --label-inset-border: inset 0 0 0 1px $1;")
+              label.setAttribute("style", label.getAttribute("style") + label.firstChild.innerHTML.replace(/<.* style="background-color: (#\w*)".*/, "--label-background-color: $1; --label-inset-border: inset 0 0 0 1px $1;"))
+              label.firstChild.innerHTML = label.firstChild.innerHTML.replace(/<(.*)>([^:]*)::([^:]*)<\/span>/, "<$1>$2</span> <span class='gl-label-text-scoped'>$3</span>")
+            }
+          }
+        }
+      }
+    }
+  }
   const observer = new MutationObserver(callback)
   observer.observe(document, { childList: true, subtree: true })
 }
