@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name     GitLab scoped labels (view only)
-// @version  11
+// @version  12
 // @grant    none
 // @include  https://git.octocat.lab/*
 // @license  GPL-3.0 License; https://www.gnu.org/licenses/gpl-3.0.txt
