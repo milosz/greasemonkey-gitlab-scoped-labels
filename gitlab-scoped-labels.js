@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name     GitLab scoped labels (view only)
-// @version  12
+// @version  13
 // @grant    none
 // @include  https://git.octocat.lab/*
 // @license  GPL-3.0 License; https://www.gnu.org/licenses/gpl-3.0.txt
@@ -25,7 +25,7 @@ if(window.location.pathname.match(/.*\/boards/)) { // boards
   }
   const observer = new MutationObserver(callback)
   observer.observe(document, { childList: true, subtree: true })
-} else if(window.location.pathname.match(/.*\/issues$/)) { // issues list
+} else if(window.location.pathname.match(/.*\/issues\/?$/)) { // issues list
   const callback = function(mutations, observer) {
     for(const mutation of mutations) {
       for(const addedElement of mutation.addedNodes) {
